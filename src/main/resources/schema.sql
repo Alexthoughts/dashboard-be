@@ -1,0 +1,9 @@
+
+DROP TABLE IF EXISTS holidays;
+
+CREATE TABLE IF NOT EXISTS holidays (
+  id INTEGER PRIMARY KEY,
+  name VARCHAR(1000),
+  local_name VARCHAR(1000),
+  date DATE
+);
