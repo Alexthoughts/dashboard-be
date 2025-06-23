@@ -58,3 +58,8 @@ EXPOSE 8080
 # Specify the command to run the JAR file when the container starts
 ENTRYPOINT ["java", "-jar", "dashboard-be-0.0.1-SNAPSHOT.jar"]
 #ENTRYPOINT ["java", "-jar", "/app/dashboard-be-0.0.1-SNAPSHOT.jar"]
+
+
+#docker build -t demo-deployment .
+#docker tag demo-deployment alexnehoi/demo-deployment:latest
+#docker push alexnehoi/demo-deployment:latest
