@@ -1,12 +1,14 @@
-package com.example.dashboard_be.controllers;
+package dashboard.controllers;
 
-import com.example.dashboard_be.services.HolidayService;
+import dashboard.services.HolidayService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/holiday")
 public class HolidayController {
     private HolidayService holidayService;
 
@@ -15,7 +17,7 @@ public class HolidayController {
     }
 
     @GetMapping("/get-holiday-list")
-    public String getHolidayList() {
+    public List getHolidayList() {
         return holidayService.getHolidayList();
     }
 }
