@@ -63,7 +63,6 @@ public class HolidayService {
                     .body(new ParameterizedTypeReference<List<HolidayResponseDto>>() {
                     });
 
-
         } catch (RestClientResponseException ex) {
             System.err.println("Holiday API error: " + ex.getStatusCode() + " - " + ex.getResponseBodyAsString());
             return Collections.emptyList();
