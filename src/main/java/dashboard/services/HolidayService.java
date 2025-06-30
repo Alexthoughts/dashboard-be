@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
+
 import java.time.Year;
 import java.util.Collections;
 import java.util.List;
@@ -60,7 +61,7 @@ public class HolidayService {
                     .header("x-rapidapi-key", "2545cfc18amsh4fa2481df2d6a5ep13ff72jsn3d0b055227f7")
                     .header("x-rapidapi-host", "public-holidays7.p.rapidapi.com")
                     .retrieve()
-                    .body(new ParameterizedTypeReference<List<HolidayResponseDto>>() {
+                    .body(new ParameterizedTypeReference<>() {
                     });
 
         } catch (RestClientResponseException ex) {
