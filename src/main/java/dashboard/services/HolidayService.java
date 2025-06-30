@@ -50,7 +50,7 @@ public class HolidayService {
     }
 
     public List<HolidayResponseDto> getHolidaysRest(Year currentYear, String countryCode) {
-        String url = String.format("https://public-holidays7.p.rapidapi.com/%d/%s", currentYear.getValue(), countryCode);
+        String url = String.format("https://public-holidays7.p.rapidapi.com/%s/%s", currentYear, countryCode);
 
         RestClient restClient = RestClient.create();
 
