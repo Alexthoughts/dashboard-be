@@ -1,9 +1,6 @@
 package dashboard.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
@@ -13,6 +10,7 @@ import java.util.Date;
 @Table(name = "holidays")
 public class HolidayEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 
@@ -24,4 +22,13 @@ public class HolidayEntity {
 
     @Column(name = "date")
     private Date date;
+
+    @Column(name = "country_code")
+    private String countryCode;
+
+    @Column(name = "fixed")
+    private Boolean fixed;
+
+    @Column(name = "global")
+    private Boolean global;
 }

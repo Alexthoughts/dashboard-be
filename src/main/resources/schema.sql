@@ -2,8 +2,11 @@
 DROP TABLE IF EXISTS holidays;
 
 CREATE TABLE IF NOT EXISTS holidays (
-  id INTEGER PRIMARY KEY,
+   id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   name VARCHAR(1000),
   local_name VARCHAR(1000),
-  date DATE
+  date DATE,
+  country_code VARCHAR(10),
+  fixed BOOLEAN,
+  global BOOLEAN
 );
