@@ -12,6 +12,5 @@ public record HolidayResponseDto(
         String countryCode,
         Boolean fixed,
         Boolean global
-
 ) {
 }

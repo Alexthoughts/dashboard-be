@@ -1,11 +1,11 @@
-package dashboard.services;
+package dashboard.service;
 
 import dashboard.dto.HolidayFeDto;
 import dashboard.dto.HolidayResponseDto;
 import dashboard.entity.HolidayEntity;
 import dashboard.mapper.HolidayMapper;
 import dashboard.repository.HolidayRepository;
-import dashboard.services.mocks.HolidayServiceMock;
+import dashboard.service.mocks.HolidayServiceMock;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -68,7 +68,7 @@ public class HolidayService {
             System.err.println("Holiday API error: " + ex.getStatusCode() + " - " + ex.getResponseBodyAsString());
             return Collections.emptyList();
         } catch (RestClientException ex) {
-            System.err.println("Holiday API call failed: " + ex.getMessage());
+            System.err.println("Holiday API call failed: " + ex.getMessage() + ", it could be a bad request");
             return Collections.emptyList();
         }
     }

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
 
 public record HolidayFeDto(
-        int id,
+        Long id,
         String name,
         String localName,
 

@@ -1,12 +1,9 @@
-package dashboard.controllers;
+package dashboard.controller;
 
 import dashboard.dto.HolidayFeDto;
-import dashboard.services.HolidayService;
+import dashboard.service.HolidayService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -14,7 +11,7 @@ import java.util.List;
 @RequestMapping("/holiday")
 @AllArgsConstructor
 public class HolidayController {
-    private HolidayService holidayService;
+    private final HolidayService holidayService;
 
     @GetMapping("/get-holiday-list/{countryCode}")
     public List<HolidayFeDto> getHolidayList(@PathVariable("countryCode") String countryCode) {

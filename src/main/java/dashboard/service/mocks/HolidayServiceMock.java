@@ -1,4 +1,4 @@
-package dashboard.services.mocks;
+package dashboard.service.mocks;
 
 import dashboard.dto.HolidayResponseDto;
 import org.springframework.stereotype.Service;
