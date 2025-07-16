@@ -1,6 +1,6 @@
 package dashboard.controller;
 
-import dashboard.dto.HolidayFeDto;
+import dashboard.dto.fe.HolidayFeDto;
 import dashboard.service.HolidayService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;

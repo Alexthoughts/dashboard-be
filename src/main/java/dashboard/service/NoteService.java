@@ -1,6 +1,6 @@
 package dashboard.service;
 
-import dashboard.dto.NoteFeDto;
+import dashboard.dto.fe.NoteFeDto;
 import dashboard.entity.NoteEntity;
 import dashboard.mapper.NoteMapper;
 import dashboard.repository.NoteRepository;

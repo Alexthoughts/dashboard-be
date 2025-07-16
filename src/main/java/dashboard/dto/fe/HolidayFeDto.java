@@ -1,4 +1,4 @@
-package dashboard.dto;
+package dashboard.dto.fe;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

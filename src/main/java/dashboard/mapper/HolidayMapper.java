@@ -1,6 +1,6 @@
 package dashboard.mapper;
 
-import dashboard.dto.HolidayFeDto;
+import dashboard.dto.fe.HolidayFeDto;
 import dashboard.dto.HolidayResponseDto;
 import dashboard.entity.HolidayEntity;
 import org.mapstruct.Mapper;

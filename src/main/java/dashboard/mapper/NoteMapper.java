@@ -1,6 +1,6 @@
 package dashboard.mapper;
 
-import dashboard.dto.NoteFeDto;
+import dashboard.dto.fe.NoteFeDto;
 import dashboard.entity.NoteEntity;
 import org.mapstruct.Mapper;
 

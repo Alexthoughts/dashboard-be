@@ -1,6 +1,6 @@
 package dashboard.controller;
 
-import dashboard.dto.NoteFeDto;
+import dashboard.dto.fe.NoteFeDto;
 import dashboard.service.NoteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
