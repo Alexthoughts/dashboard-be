@@ -1,6 +1,7 @@
 package dashboard.controller;
 
 import dashboard.dto.fe.ConvertRateFeDto;
+import dashboard.dto.fe.ResponseFeDTO;
 import dashboard.dto.fe.SupportedCurrenciesFeDto;
 import dashboard.dto.fe.UpdateSavedRatesFeDto;
 import dashboard.service.CurrenciesService;
@@ -16,17 +17,17 @@ public class CurrenciesController {
     private final CurrenciesService currenciesService;
 
     @GetMapping("/get-currencies-list")
-    public List<SupportedCurrenciesFeDto> getCurrenciesList() {
+    public ResponseFeDTO<List<SupportedCurrenciesFeDto>> getCurrenciesList() {
         return currenciesService.getCurrenciesList();
     }
 
     @GetMapping("/get-exchange-rate")
-    public ConvertRateFeDto getExchangeRate(@RequestBody ConvertRateFeDto request) {
+    public ResponseFeDTO<ConvertRateFeDto> getExchangeRate(@RequestBody ConvertRateFeDto request) {
         return currenciesService.getTheRate(request.from(), request.to());
     }
 
     @GetMapping("/get-saved-rates")
-    public UpdateSavedRatesFeDto getSavedRates() {
+    public ResponseFeDTO<UpdateSavedRatesFeDto> getSavedRates() {
         return currenciesService.getSavedRates();
     }
 

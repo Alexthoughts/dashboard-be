@@ -1,76 +1,76 @@
 package dashboard.service;
 
+import dashboard.client.HolidayApiClient;
 import dashboard.dto.HolidayResponseDto;
 import dashboard.dto.fe.HolidayFeDto;
+import dashboard.dto.fe.ResponseFeDTO;
 import dashboard.entity.HolidayEntity;
 import dashboard.mapper.HolidayMapper;
 import dashboard.repository.HolidayRepository;
 import dashboard.service.mocks.HolidayServiceMock;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Year;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class HolidayService {
-    private final RestClient restClient;
+    private static final Logger logger = LoggerFactory.getLogger(HolidayService.class);
     private final HolidayRepository holidayRepository;
     private final HolidayMapper holidayMapper;
     private final HolidayServiceMock holidayServiceMock;
+    private final HolidayApiClient holidayApiClient;
 
     @Value("${holiday-service-mock}")
     boolean isHolidayServiceMock;
 
-    @Value("${api.rapidApi.key}")
-    String rapidApiKey;
-
     @Transactional
-    public List<HolidayFeDto> getHolidayList(String countryCode) {
-        List<HolidayResponseDto> holidayResponse;
+    public ResponseFeDTO<List<HolidayFeDto>> getHolidayList(String countryCode) {
+        ResponseFeDTO<List<HolidayFeDto>> holidaysResponse = new ResponseFeDTO<>();
+        List<String> holidaysResponseErrorsList = new ArrayList<>();
+        List<HolidayResponseDto> holidayList;
 
         if (isHolidayServiceMock) {
-            holidayResponse = holidayServiceMock.getMockHolidayList();
+            holidayList = holidayServiceMock.getMockHolidayList();
         } else {
-            holidayResponse = getHolidaysRest(Year.now(), countryCode);
+            holidayList = getHolidaysRest(Year.now(), countryCode, holidaysResponseErrorsList);
         }
 
-        if (holidayResponse != null && !holidayResponse.isEmpty()) {
-            List<HolidayEntity> entities = holidayMapper.holidayResponseDtoListToHolidayEntityList(holidayResponse);
+        if (holidayList != null && !holidayList.isEmpty()) {
+            List<HolidayEntity> entities = holidayMapper.holidayResponseDtoListToHolidayEntityList(holidayList);
             holidayRepository.deleteAll();
             holidayRepository.saveAll(entities);
         }
 
         List<HolidayEntity> holidaysInDbList = holidayRepository.findAll();
 
-        return holidayMapper.holidayEntityListToHolidayFeDtoList(holidaysInDbList);
+        holidaysResponse.setData(holidayMapper.holidayEntityListToHolidayFeDtoList(holidaysInDbList));
+        holidaysResponse.setErrors(holidaysResponseErrorsList);
+        return holidaysResponse;
     }
 
-    private List<HolidayResponseDto> getHolidaysRest(Year currentYear, String countryCode) {
-        String url = String.format("https://public-holidays7.p.rapidapi.com/%s/%s", currentYear, countryCode);
-
+    private List<HolidayResponseDto> getHolidaysRest(Year currentYear, String countryCode, List<String> holidaysResponseErrorsList) {
         try {
-            return restClient.get()
-                    .uri(url)
-                    .header("x-rapidapi-key", rapidApiKey)
-                    .header("x-rapidapi-host", "public-holidays7.p.rapidapi.com")
-                    .retrieve()
-                    .body(new ParameterizedTypeReference<>() {
-                    });
+            return holidayApiClient.fetchHolidays(currentYear, countryCode);
 
         } catch (RestClientResponseException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Holiday API error: " + ex.getStatusCode() + " - " + ex.getResponseBodyAsString());
+            holidaysResponseErrorsList.add("Holiday API error: " + ex.getStatusCode() + " - " + ex.getResponseBodyAsString());
+            logger.error("Holiday API error: {} - {}", ex.getStatusCode(), ex.getResponseBodyAsString(), ex);
         } catch (RestClientException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Holiday API call failed: " + ex.getMessage() + ", it could be a bad request");
+            holidaysResponseErrorsList.add("Holiday API call failed: " + ex.getMessage() + ", it could be a bad request");
+            logger.error("Holiday API call failed: {}, it could be a bad request", ex.getMessage(), ex);
         }
+
+        return Collections.emptyList();
     }
 }

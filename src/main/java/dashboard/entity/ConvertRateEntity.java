@@ -19,6 +19,6 @@ public class ConvertRateEntity {
     @JoinColumn(name = "to_currency_id", nullable = false)
     private SupportedCurrenciesEntity toCurrencyId;
 
-    @Column(name = "convertedAmount")
-    private Double convertedAmount;
+    @Column(name = "converted_amount")
+    private String convertedAmount;
 }

@@ -11,6 +11,6 @@ public record ConvertRateFeDto(
         @NotNull
         String to,
 
-        Double convertedAmount
+        String convertedAmount
 ) {
 }
