@@ -4,7 +4,17 @@
 - $env:DATABASE_PASSWORD="dashboardapp"
 - ./mvnw package
 
-## Docker deployment
+## Docker 
+#### This uploads your new image to Docker Hub, under your username (alexnehoi) and tag latest.
+- run docker desktop
 - docker build -t demo-deployment .
 - docker tag demo-deployment alexnehoi/demo-deployment:latest
 - docker push alexnehoi/demo-deployment:latest
+
+## Deployment
+#### Render pulls from Docker Hub the image tagged latest
+- render.com (alexnehoi)
+- select project
+- manual deploy
+- deploy latest reference
+- db - neon (alexnehoi)
