@@ -13,8 +13,7 @@ import dashboard.mapper.WeatherMapper;
 import dashboard.repository.WeatherRepository;
 import dashboard.util.HelperMethods;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
@@ -23,10 +22,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class WeatherService {
-    private static final Logger logger = LoggerFactory.getLogger(WeatherService.class);
     private final WeatherMapper weatherMapper;
     private final WeatherRepository weatherRepository;
     private final Integer forecastDays = 3;
@@ -132,10 +131,10 @@ public class WeatherService {
 
         } catch (RestClientResponseException ex) {
             apiResponseErrorsList.add("Weather API error: " + ex.getStatusCode() + " - " + ex.getResponseBodyAsString());
-            logger.error("Weather API error: {} - {}", ex.getStatusCode(), ex.getResponseBodyAsString(), ex);
+            log.error("Weather API error: {} - {}", ex.getStatusCode(), ex.getResponseBodyAsString(), ex);
         } catch (RestClientException ex) {
             apiResponseErrorsList.add("Weather API call failed: " + ex.getMessage() + ", it could be a bad request");
-            logger.error("Weather API call failed: {}, it could be a bad request", ex.getMessage());
+            log.error("Weather API call failed: {}, it could be a bad request", ex.getMessage());
         }
         return NullNode.getInstance();
     }
@@ -146,10 +145,10 @@ public class WeatherService {
 
         } catch (RestClientResponseException ex) {
             apiResponseErrorsList.add("Air quality API error: " + ex.getStatusCode() + " - " + ex.getResponseBodyAsString());
-            logger.error("Air quality API error: {} - {}", ex.getStatusCode(), ex.getResponseBodyAsString(), ex);
+            log.error("Air quality API error: {} - {}", ex.getStatusCode(), ex.getResponseBodyAsString(), ex);
         } catch (RestClientException ex) {
             apiResponseErrorsList.add("Air quality API call failed: " + ex.getMessage() + ", it could be a bad request");
-            logger.error("Air quality API call failed: {}, it could be a bad request", ex.getMessage(), ex);
+            log.error("Air quality API call failed: {}, it could be a bad request", ex.getMessage(), ex);
         }
         return NullNode.getInstance();
     }
