@@ -9,7 +9,7 @@ public class WeatherDetailCommonFeDto {
     private Double minTemperature;
     private Double totalPrecipitationMm;
     private Integer dailyChanceOfRain;
-    private Double totalSnowSm;
+    private Double totalSnowCm;
     private Integer dailyChanceOfSnow;
     private String icon;
 }

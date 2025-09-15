@@ -116,7 +116,7 @@ public class WeatherService {
             entity.setMaxTemperature(forecastDay.path("maxtemp_c").asDouble());
             entity.setMinTemperature(forecastDay.path("mintemp_c").asDouble());
             entity.setTotalPrecipitationMm(forecastDay.path("totalprecip_mm").asDouble());
-            entity.setTotalSnowSm(forecastDay.path("totalsnow_cm").asDouble());
+            entity.setTotalSnowCm(forecastDay.path("totalsnow_cm").asDouble());
             entity.setDailyChanceOfRain(forecastDay.path("daily_chance_of_rain").asInt());
             entity.setDailyChanceOfSnow(forecastDay.path("daily_chance_of_snow").asInt());
             entity.setUpdatedAt(updatedAt);

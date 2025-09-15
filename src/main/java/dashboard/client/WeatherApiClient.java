@@ -20,7 +20,7 @@ public class WeatherApiClient {
 
     public JsonNode fetchWeather(Double lat, Double lon, Integer forecastDays) {
         String url = String.format("https://weatherapi-com.p.rapidapi.com/forecast.json?q=%s,%s&days=%d", lat, lon, forecastDays);
-        logger.debug("Fetching convert rate lat: {}, lon: {},  days: {}", lat, lon, forecastDays);
+        logger.debug("Fetching weather lat: {}, lon: {},  days: {}", lat, lon, forecastDays);
 
         JsonNode response = restClient.get()
                 .uri(url)
@@ -30,7 +30,7 @@ public class WeatherApiClient {
                 .body(new ParameterizedTypeReference<>() {
                 });
 
-        logger.debug("Fetching convert rate - success - {}", response);
+        logger.debug("Fetching weather - success - {}", response);
         return response;
     }
 }

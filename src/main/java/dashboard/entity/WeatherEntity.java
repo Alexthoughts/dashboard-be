@@ -47,7 +47,7 @@ public class WeatherEntity {
     private Integer dailyChanceOfRain;
 
     @Column(name = "total_snow_cm")
-    private Double totalSnowSm;
+    private Double totalSnowCm;
 
     @Column(name = "daily_chance_of_snow")
     private Integer dailyChanceOfSnow;

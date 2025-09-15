@@ -48,7 +48,7 @@ public class CurrenciesService {
 
         if (!supportedCurrencies.isEmpty()) {
             List<SupportedCurrenciesEntity> supportedCurrenciesList = convertRateMapper.fromSupportedCurrenciesFeDtoListToSupportedCurrenciesEntityList(supportedCurrencies);
-            supportedCurrenciesRepository.deleteAll();
+//            supportedCurrenciesRepository.deleteAll();
             savedEntityList = supportedCurrenciesRepository.saveAll(supportedCurrenciesList);
 
             supportedCurrenciesResponse.setData(convertRateMapper.fromSupportedCurrenciesEntityListToSupportedCurrenciesFeDtoList(savedEntityList));
@@ -75,10 +75,25 @@ public class CurrenciesService {
         SupportedCurrenciesEntity toCurrency = supportedCurrenciesRepository.findBySymbol(response.result().to());
 
         ConvertRateEntity convertRateEntity = new ConvertRateEntity();
-        convertRateEntity.setFromCurrencyId(fromCurrency);
-        convertRateEntity.setToCurrencyId(toCurrency);
+//        convertRateEntity.setFromCurrencyId(fromCurrency);
+//        convertRateEntity.setToCurrencyId(toCurrency);
         String trimmedRate = helperMethods.roundTwoDecimalsAndConvertToString(response.result().convertedAmount());
-        convertRateEntity.setConvertedAmount(trimmedRate);
+//        convertRateEntity.setConvertedAmount(trimmedRate);
+
+        Optional<ConvertRateEntity> existing = convertRateRepository
+                .findByFromCurrencyIdAndToCurrencyId(fromCurrency, toCurrency);
+
+        if (existing.isPresent()) {
+            // Update existing rate
+            convertRateEntity = existing.get();
+            convertRateEntity.setConvertedAmount(trimmedRate);
+        } else {
+            // Insert new
+            convertRateEntity = new ConvertRateEntity();
+            convertRateEntity.setFromCurrencyId(fromCurrency);
+            convertRateEntity.setToCurrencyId(toCurrency);
+            convertRateEntity.setConvertedAmount(trimmedRate);
+        }
 
         ConvertRateEntity savedEntity = convertRateRepository.save(convertRateEntity);
 

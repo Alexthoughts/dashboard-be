@@ -22,8 +22,10 @@ public class CurrenciesController {
     }
 
     @GetMapping("/get-exchange-rate")
-    public ResponseFeDTO<ConvertRateFeDto> getExchangeRate(@RequestBody ConvertRateFeDto request) {
-        return currenciesService.getTheRate(request.from(), request.to());
+    public ResponseFeDTO<ConvertRateFeDto> getExchangeRate(
+            @RequestParam String from,
+            @RequestParam String to) {
+        return currenciesService.getTheRate(from, to);
     }
 
     @GetMapping("/get-saved-rates")

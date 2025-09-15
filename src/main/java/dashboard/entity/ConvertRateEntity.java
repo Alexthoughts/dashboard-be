@@ -4,7 +4,12 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "convert_rate")
+@Table(
+        name = "convert_rate",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"from_currency_id", "to_currency_id"})
+        }
+)
 @Data
 public class ConvertRateEntity {
     @Id

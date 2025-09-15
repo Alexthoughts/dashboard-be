@@ -7,10 +7,11 @@ import lombok.Data;
 @Table(name = "supported_currencies")
 @Data
 public class SupportedCurrenciesEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
 
+    @Id
     @Column(name = "symbol", nullable = false)
     private String symbol;
 
