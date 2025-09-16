@@ -24,5 +24,6 @@ public interface ConvertRateMapper {
 
     List<SupportedCurrenciesFeDto> fromSupportedCurrenciesEntityListToSupportedCurrenciesFeDtoList(List<SupportedCurrenciesEntity> supportedCurrenciesEntities);
 
+    @Mapping(target = "id", ignore = true)
     SupportedCurrenciesFeDto fromSupportedCurrenciesEntityToSupportedCurrenciesFeDto(SupportedCurrenciesEntity supportedCurrenciesEntity);
 }
