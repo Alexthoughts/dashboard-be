@@ -1,4 +1,4 @@
-package com.example.dashboard_be;
+package dashboard;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
