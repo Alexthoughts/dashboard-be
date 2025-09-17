@@ -15,6 +15,8 @@ import dashboard.util.HelperMethods;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +40,7 @@ public class CurrenciesService {
     private final HelperMethods helperMethods;
 
     @Transactional
+    @Cacheable("availableCurrenciesCache")
     public ResponseFeDTO<List<SupportedCurrenciesFeDto>> getCurrenciesList() {
         ResponseFeDTO<List<SupportedCurrenciesFeDto>> supportedCurrenciesResponse = new ResponseFeDTO<>();
         List<String> supportedCurrenciesResponseErrorsList = new ArrayList<>();
@@ -48,7 +51,6 @@ public class CurrenciesService {
 
         if (!supportedCurrencies.isEmpty()) {
             List<SupportedCurrenciesEntity> supportedCurrenciesList = convertRateMapper.fromSupportedCurrenciesFeDtoListToSupportedCurrenciesEntityList(supportedCurrencies);
-//            supportedCurrenciesRepository.deleteAll();
             savedEntityList = supportedCurrenciesRepository.saveAll(supportedCurrenciesList);
 
             supportedCurrenciesResponse.setData(convertRateMapper.fromSupportedCurrenciesEntityListToSupportedCurrenciesFeDtoList(savedEntityList));
@@ -58,6 +60,7 @@ public class CurrenciesService {
         return supportedCurrenciesResponse;
     }
 
+    @CacheEvict(value = "convertRateCache", allEntries = true)
     public ResponseFeDTO<ConvertRateFeDto> getTheRate(String from, String to) {
         ResponseFeDTO<ConvertRateFeDto> ratesResponse = new ResponseFeDTO<>();
         List<String> ratesResponseErrorsList = new ArrayList<>();
@@ -74,11 +77,8 @@ public class CurrenciesService {
         SupportedCurrenciesEntity fromCurrency = supportedCurrenciesRepository.findBySymbol(response.result().from());
         SupportedCurrenciesEntity toCurrency = supportedCurrenciesRepository.findBySymbol(response.result().to());
 
-        ConvertRateEntity convertRateEntity = new ConvertRateEntity();
-//        convertRateEntity.setFromCurrencyId(fromCurrency);
-//        convertRateEntity.setToCurrencyId(toCurrency);
+        ConvertRateEntity convertRateEntity;
         String trimmedRate = helperMethods.roundTwoDecimalsAndConvertToString(response.result().convertedAmount());
-//        convertRateEntity.setConvertedAmount(trimmedRate);
 
         Optional<ConvertRateEntity> existing = convertRateRepository
                 .findByFromCurrencyIdAndToCurrencyId(fromCurrency, toCurrency);
@@ -102,6 +102,7 @@ public class CurrenciesService {
         return ratesResponse;
     }
 
+    @Cacheable("convertRateCache")
     public ResponseFeDTO<UpdateSavedRatesFeDto> getSavedRates() {
         ResponseFeDTO<UpdateSavedRatesFeDto> updatedRatesResponse = new ResponseFeDTO<>();
         List<String> ratesResponseErrorsList = new ArrayList<>();
@@ -144,6 +145,7 @@ public class CurrenciesService {
         }
     }
 
+    @CacheEvict(value = "convertRateCache", allEntries = true)
     public void deleteSavedRate(Long id) {
         ConvertRateEntity entity = convertRateRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("rate with id %d doesn't exist", id))

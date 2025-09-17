@@ -7,6 +7,7 @@ public record WeatherFeDto(
         String region,
         String city,
         LocalDateTime updatedAt,
+        Boolean isUpdated,
         WeatherCurrentDetailFeDto current,
         List<WeatherDetailCommonFeDto> forecast
 ) {

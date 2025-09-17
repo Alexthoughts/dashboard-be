@@ -28,6 +28,7 @@ public class CurrenciesController {
         return currenciesService.getTheRate(from, to);
     }
 
+
     @GetMapping("/get-saved-rates")
     public ResponseFeDTO<UpdateSavedRatesFeDto> getSavedRates() {
         return currenciesService.getSavedRates();

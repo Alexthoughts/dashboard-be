@@ -5,6 +5,8 @@ import dashboard.entity.NoteEntity;
 import dashboard.mapper.NoteMapper;
 import dashboard.repository.NoteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,10 +19,12 @@ public class NoteService {
     private final NoteRepository noteRepository;
     private final NoteMapper noteMapper;
 
+    @Cacheable("notesCache")
     public List<NoteFeDto> getAllNotes() {
         return noteMapper.noteEntityListToNoteFeDtoList(noteRepository.findAll());
     }
 
+    @CacheEvict(value = "notesCache", allEntries = true)
     public NoteFeDto createNewNote(NoteFeDto note) {
 
         NoteEntity newNoteEntity = noteMapper.noteFeDtoToNoteEntity(note);
@@ -30,11 +34,13 @@ public class NoteService {
         return noteMapper.noteEntityToNoteFeDto(newNoteEntity);
     }
 
+    @CacheEvict(value = "notesCache", allEntries = true)
     public void deleteNote(Long id) {
         NoteEntity noteEntity = findNoteByIdOrThrow(id);
         noteRepository.delete(noteEntity);
     }
 
+    @CacheEvict(value = "notesCache", allEntries = true)
     public NoteFeDto updateNote(NoteFeDto note) {
         NoteEntity noteEntity = findNoteByIdOrThrow(note.id());
         if (note.text() == null) {

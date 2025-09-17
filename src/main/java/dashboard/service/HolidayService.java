@@ -8,6 +8,7 @@ import dashboard.entity.HolidayEntity;
 import dashboard.mapper.HolidayMapper;
 import dashboard.repository.HolidayRepository;
 import dashboard.service.mocks.HolidayServiceMock;
+import org.springframework.cache.annotation.Cacheable;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,7 @@ public class HolidayService {
     boolean isHolidayServiceMock;
 
     @Transactional
+    @Cacheable("holidaysCache")
     public ResponseFeDTO<List<HolidayFeDto>> getHolidayList(String countryCode) {
         ResponseFeDTO<List<HolidayFeDto>> holidaysResponse = new ResponseFeDTO<>();
         List<String> holidaysResponseErrorsList = new ArrayList<>();

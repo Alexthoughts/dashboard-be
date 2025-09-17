@@ -14,6 +14,7 @@ import dashboard.repository.WeatherRepository;
 import dashboard.util.HelperMethods;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
@@ -33,6 +34,7 @@ public class WeatherService {
     private final WeatherApiClient weatherApiClient;
     private final AqiApiClient aqiApiClient;
 
+    @Cacheable("weatherCache")
     public ResponseFeDTO<WeatherFeDto> getWeather(Double lat, Double lon) {
         List<String> apiResponseErrorsList = new ArrayList<>();
         ResponseFeDTO<WeatherFeDto> weatherResponse = new ResponseFeDTO<>();
@@ -51,17 +53,17 @@ public class WeatherService {
         LocalDateTime updatedAt = helperMethods.convertEpochSecondsToLocalDateTime(epochSeconds);
 
         if (responseWeather.isEmpty() && !existingEntities.isEmpty()) {
-            return createWeatherResponseObject(existingEntities, updatedAt, weatherResponse, apiResponseErrorsList);
+            return createWeatherResponseObject(existingEntities, updatedAt, false, weatherResponse, apiResponseErrorsList);
         }
 
         List<WeatherEntity> entitiesToSave = createWeatherEntity(existingEntities, responseWeather, responseAqi, updatedAt);
 
         weatherRepository.saveAll(entitiesToSave);
 
-        return createWeatherResponseObject(entitiesToSave, updatedAt, weatherResponse, apiResponseErrorsList);
+        return createWeatherResponseObject(entitiesToSave, updatedAt, true, weatherResponse, apiResponseErrorsList);
     }
 
-    private ResponseFeDTO<WeatherFeDto> createWeatherResponseObject(List<WeatherEntity> entityList, LocalDateTime updatedAt,
+    private ResponseFeDTO<WeatherFeDto> createWeatherResponseObject(List<WeatherEntity> entityList, LocalDateTime updatedAt, Boolean isUpdated,
                                                                     ResponseFeDTO<WeatherFeDto> weatherResponse, List<String> apiResponseErrorsList) {
         List<WeatherDetailCommonFeDto> weatherForecastList =
                 weatherMapper.weatherEntityListToWeatherDetailCommonFeDtoList(entityList.subList(1, entityList.size()));
@@ -69,7 +71,7 @@ public class WeatherService {
         String region = entityList.get(0).getRegion();
         String city = entityList.get(0).getCity();
 
-        WeatherFeDto weather = new WeatherFeDto(region, city, updatedAt, currentWeather, weatherForecastList);
+        WeatherFeDto weather = new WeatherFeDto(region, city, updatedAt, isUpdated, currentWeather, weatherForecastList);
         weatherResponse.setData(weather);
         weatherResponse.setErrors(apiResponseErrorsList);
 
