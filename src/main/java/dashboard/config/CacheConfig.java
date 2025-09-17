@@ -37,7 +37,7 @@ public class CacheConfig {
                         .maximumSize(1000)
                         .build());
 
-        CaffeineCache availableCurrenciesCache = new CaffeineCache("convertRateCache",
+        CaffeineCache availableCurrenciesCache = new CaffeineCache("availableCurrenciesCache",
                 Caffeine.newBuilder()
                         .expireAfterWrite(1, TimeUnit.DAYS) // 1 day
                         .maximumSize(1000)
