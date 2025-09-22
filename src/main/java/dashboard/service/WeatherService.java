@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.NullNode;
 import dashboard.client.AqiApiClient;
 import dashboard.client.WeatherApiClient;
+import dashboard.config.CacheConfig;
 import dashboard.dto.fe.ResponseFeDTO;
 import dashboard.dto.fe.WeatherCurrentDetailFeDto;
 import dashboard.dto.fe.WeatherDetailCommonFeDto;
@@ -15,6 +16,7 @@ import dashboard.util.HelperMethods;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
@@ -33,9 +35,15 @@ public class WeatherService {
     private final HelperMethods helperMethods;
     private final WeatherApiClient weatherApiClient;
     private final AqiApiClient aqiApiClient;
+    private final CacheConfig cacheConfig;
 
-    @Cacheable("weatherCache")
     public ResponseFeDTO<WeatherFeDto> getWeather(Double lat, Double lon) {
+        ResponseFeDTO<WeatherFeDto> cached = getFromCache(lat, lon);
+        if (cached != null) {
+            log.info("Returning weather from cache for lat={}, lon={}, {}", lat, lon, cached);
+            return cached;
+        }
+
         List<String> apiResponseErrorsList = new ArrayList<>();
         ResponseFeDTO<WeatherFeDto> weatherResponse = new ResponseFeDTO<>();
 
@@ -60,7 +68,10 @@ public class WeatherService {
 
         weatherRepository.saveAll(entitiesToSave);
 
-        return createWeatherResponseObject(entitiesToSave, updatedAt, true, weatherResponse, apiResponseErrorsList);
+        ResponseFeDTO<WeatherFeDto> response = createWeatherResponseObject(entitiesToSave, updatedAt, true, weatherResponse, apiResponseErrorsList);
+        putToCache(lat, lon, response);
+
+        return response;
     }
 
     private ResponseFeDTO<WeatherFeDto> createWeatherResponseObject(List<WeatherEntity> entityList, LocalDateTime updatedAt, Boolean isUpdated,
@@ -125,6 +136,27 @@ public class WeatherService {
         }
 
         return dbList;
+    }
+
+    @SuppressWarnings("unchecked")
+    private ResponseFeDTO<WeatherFeDto> getFromCache(Double lat, Double lon) {
+        var weatherCache = (CaffeineCache) cacheConfig.cacheManager().getCache("weatherCache");
+        if (weatherCache == null) return null;
+
+        String key = buildCacheKey(lat, lon);
+        return weatherCache.get(key, ResponseFeDTO.class);
+    }
+
+    private void putToCache(Double lat, Double lon, ResponseFeDTO<WeatherFeDto> response) {
+        var weatherCache = (CaffeineCache) cacheConfig.cacheManager().getCache("weatherCache");
+        if (weatherCache == null) return;
+
+        String key = buildCacheKey(lat, lon);
+        weatherCache.put(key, response);
+    }
+
+    private String buildCacheKey(Double lat, Double lon) {
+        return lat + ":" + lon;
     }
 
     private JsonNode getWeatherFromApi(Double lat, Double lon, List<String> apiResponseErrorsList) {

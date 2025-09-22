@@ -15,7 +15,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class HolidayApiClient {
-    public static final Logger logger = LoggerFactory.getLogger(HolidayApiClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(HolidayApiClient.class);
     private final RestClient restClient;
 
     @Value("${api.rapidApi.key}")
@@ -27,8 +27,8 @@ public class HolidayApiClient {
 
         List<HolidayResponseDto> response = restClient.get()
                 .uri(url)
-                .header("x-rapidapi-key", rapidApiKey)
-                .header("x-rapidapi-host", "public-holidays7.p.rapidapi.com")
+                .header("X-RapidAPI-Key", rapidApiKey)
+                .header("X-RapidAPI-Host", "public-holidays7.p.rapidapi.com")
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {
                 });

@@ -26,27 +26,29 @@ public class CurrenciesApiClient {
 
         List<SupportedCurrenciesFeDto> response = restClient.get()
                 .uri("https://currency-converter18.p.rapidapi.com/api/v1/supportedCurrencies")
-                .header("x-rapidapi-key", rapidApiKey)
-                .header("x-rapidapi-host", "currency-converter18.p.rapidapi.com")
+                .header("X-RapidAPI-Key", rapidApiKey)
+                .header("X-RapidAPI-Host", "currency-converter18.p.rapidapi.com")
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {
                 });
 
         logger.debug("Fetching currencies list - success - {}", response);
-    return response;
+        return response;
     }
 
     public ConvertResponseDto fetchConvertedRate(String from, String to) {
-        String url = String.format("https://currency-converter18.p.rapidapi.com/api/v1/convert?from=%s&to=%s&amount=1", from, to);
+        String url = String.format(
+                "https://currency-converter18.p.rapidapi.com/api/v1/convert?from=%s&to=%s&amount=1",
+                from, to
+        );
         logger.debug("Fetching convert rate {} - {}", from, to);
 
         ConvertResponseDto response = restClient.get()
                 .uri(url)
-                .header("x-rapidapi-key", rapidApiKey)
-                .header("x-rapidapi-host", "currency-converter18.p.rapidapi.com")
+                .header("X-RapidAPI-Key", rapidApiKey)
+                .header("X-RapidAPI-Host", "currency-converter18.p.rapidapi.com")
                 .retrieve()
-                .body(new ParameterizedTypeReference<>() {
-                });
+                .body(ConvertResponseDto.class);
 
         logger.debug("Fetching convert rate - success - {}", response);
         return response;

@@ -24,11 +24,10 @@ public class WeatherApiClient {
 
         JsonNode response = restClient.get()
                 .uri(url)
-                .header("x-rapidapi-key", rapidApiKey)
-                .header("x-rapidapi-host", "weatherapi-com.p.rapidapi.com")
+                .header("X-RapidAPI-Key", rapidApiKey)
+                .header("X-RapidAPI-Host", "weatherapi-com.p.rapidapi.com")
                 .retrieve()
-                .body(new ParameterizedTypeReference<>() {
-                });
+                .body(JsonNode.class);
 
         logger.debug("Fetching weather - success - {}", response);
         return response;
