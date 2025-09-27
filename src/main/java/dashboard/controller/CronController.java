@@ -17,10 +17,10 @@ public class CronController {
     @GetMapping("/cron-ping")
     public ResponseEntity<String> cronPing() {
         try {
-            log.info("Cron ping received");
+            log.debug("Cron ping received");
             return ResponseEntity.ok("OK");
         } catch (Exception ex) {
-            log.error("Cron ping failed: {}", ex.getMessage(), ex);
+            log.debug("Cron ping failed: {}", ex.getMessage(), ex);
             return ResponseEntity.status(503).body("cron-ping failed: " + ex.getMessage());
         }
     }

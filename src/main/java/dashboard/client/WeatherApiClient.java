@@ -28,7 +28,7 @@ public class WeatherApiClient {
                 .retrieve()
                 .body(JsonNode.class);
 
-        logger.debug("Fetching weather - success - {}", response);
+        logger.debug("Fetching weather - success");
         return response;
     }
 }
