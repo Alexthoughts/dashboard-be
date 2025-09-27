@@ -11,7 +11,7 @@ import org.springframework.web.client.RestClient;
 @Configuration
 public class RestClientConfig {
 
-//    Every 30 s, HttpClient removes idle connections.
+//    Every 3 minutes, HttpClient removes idle connections.
 //    That way, your first request after a pause opens a fresh connection instead of reusing a dead one.
 //    It solves the “first call after inactivity fails” problem.
 
@@ -19,14 +19,14 @@ public class RestClientConfig {
     @Bean
     public RestClient restClient() {
         CloseableHttpClient httpClient = HttpClients.custom()
-                // Evict idle connections after 30s (RapidAPI often kills at ~60s)
-                .evictIdleConnections(TimeValue.ofSeconds(30))
+                // Evict idle connections after 3 minutes (RapidAPI often kills at ~60s)
+                .evictIdleConnections(TimeValue.ofMinutes(3)) //or 30sec
                 .build();
 
         HttpComponentsClientHttpRequestFactory requestFactory =
                 new HttpComponentsClientHttpRequestFactory(httpClient);
-        requestFactory.setConnectTimeout(5000); // 5s - how long your client waits to establish a TCP connection to RapidAPI
-        requestFactory.setReadTimeout(10000);   // 10s - how long your client waits for a server response after the connection has been established.
+        requestFactory.setConnectTimeout(10000); // 5s - how long your client waits to establish a TCP connection to RapidAPI
+        requestFactory.setReadTimeout(15000);   // 10s - how long your client waits for a server response after the connection has been established.
 
         return RestClient.builder()
                 .requestFactory(requestFactory)
